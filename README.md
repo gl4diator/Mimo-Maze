@@ -21,12 +21,8 @@ https://github.com/gl4diator/Mimo-Maze
 
 Screenshoots from the game below:
 
-1. Interface
-![interface](https://user-images.githubusercontent.com/65448352/136954498-a95b4810-a306-4fa7-b89b-ca7fcedbf075.png)
+1. Interface ![interface](https://user-images.githubusercontent.com/65448352/136954498-a95b4810-a306-4fa7-b89b-ca7fcedbf075.png)
 
-2.Game Play
-![game_play](https://user-images.githubusercontent.com/65448352/136954553-27e2bff2-2bf8-4442-b91d-c5a91369a35b.png)
+2.Game Play ![game_play](https://user-images.githubusercontent.com/65448352/136954553-27e2bff2-2bf8-4442-b91d-c5a91369a35b.png)
 
-3. Instructions
-
-![Instructions](https://user-images.githubusercontent.com/65448352/136954584-0c891d0a-28c2-4cb0-83d9-b67c78c9fc3a.png)
+3. Instructions ![Instructions](https://user-images.githubusercontent.com/65448352/136954584-0c891d0a-28c2-4cb0-83d9-b67c78c9fc3a.png)
