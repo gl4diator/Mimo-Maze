@@ -7,11 +7,11 @@ import keyboard
 import random
 import IA_mimo as AI
 
-#initializare fereastra turtle
+#initialize window
 fereastra = turtle.Screen()
 fereastra.setup(900,700,startx=200,starty=-20)
 
-#Stocam imaginile folosind functia register_shape din modulul turtle
+#store images for later use
 imagini = ["./imagini/soricel.gif","./imagini/zid1.gif","./imagini/cascaval.gif",
 "./imagini/soricel_stanga.gif","./imagini/zid2.gif","./imagini/zid3.gif",
 "./imagini/vieti.gif","./imagini/ceas.gif","./imagini/mutari_icon.gif","./imagini/castig.gif","./imagini/esc.gif",
@@ -21,29 +21,29 @@ imagini = ["./imagini/soricel.gif","./imagini/zid1.gif","./imagini/cascaval.gif"
 for imagine in imagini:
     turtle.register_shape(imagine)
 
-#Interfata
+#Interface
 
 def interfata():
-    #aspectul ferestrei
+    #interface design
     fereastra.title('Mimo')
     fereastra.bgpic("./imagini/fundal_interfata.png")
     fereastra.bgcolor("black")
 
-    #Am creat un obiect pentru clasa built-in din modulul Turtle pentru a fi mai usor de lucrat
+    #turtle object for easy work
     pen = turtle.Turtle()
     pen.hideturtle()
-    #Reduc animatiile
+    #reduce animation
     pen._tracer(0)
 
-    #Titlul jocului
+    #Game title
     pen.up()
     pen.goto(20,200)
     pen.color("white")
     pen.write("Mimo Maze", font=("Fire Brathers Personal Use",70,"normal"),align="center")
 
-    #Desenarea butoanelor
+    #Drawing buttons
 
-    #butonul 1 "Joaca Mimo"
+    #button1 1 "Play Mimo"
     pen.up()
     pen.goto(-115,100)
     pen.color("black")
@@ -63,7 +63,7 @@ def interfata():
     pen.color("black")
     pen.write("Play Mimo", font=("Fire Brathers Personal Use",35,"normal"),align="center")
 
-    #butonul 2 "Mimo Destept"
+    #button 2 "Mimo AI"
     pen.up()
     pen.goto(-100,15)
     pen.down()
@@ -82,7 +82,7 @@ def interfata():
     pen.color("black")
     pen.write("Mimo AI", font=("Fire Brathers Personal Use",35,"normal"),align="center")
 
-    #butonul 3 de intstructiuni
+    #button 3 "Instructions"
 
     pen.up()
     pen.goto(-80,-70)
@@ -102,7 +102,7 @@ def interfata():
     pen.color("black")
     pen.write("Instructions", font=("Fire Brathers Personal Use",35,"normal"),align="center")
 
-    #butonul 4 de iesire
+    #button 2 "Quit"
     pen.up()
     pen.goto(-60,-150)
     pen.down()
@@ -121,10 +121,10 @@ def interfata():
     pen.color("black")
     pen.write("Quit", font=("Fire Brathers Personal Use",35,"normal"),align="center")
 
-#Apelare interfata
+#Call interface funtion()
 interfata()
 
-#Definire functie cu instructiunile jocului
+#Define instruction function
 def intstructiuni():
     fereastra.bgpic("./imagini/fundal_labirint.gif")
 
@@ -243,19 +243,19 @@ def intstructiuni():
 
 
 
-#Variabila globala pentru pauza in joc
+#Global variabile for game pause
 pe_pauza = False
 
 
-#logica si functionarea jocului
+#Game logic and functionality
 
 def labirint_mimo():
     
-    #imagine fundal joc
+    #background image
     fereastra.bgpic("./imagini/fundal_labirint.gif")
     fereastra.bgcolor("black")
 
-    #Clasa Soricelului
+    #Mouse class
     class Soricel(turtle.Turtle):
         def __init__(self):
             turtle.Turtle.__init__(self)
@@ -269,11 +269,11 @@ def labirint_mimo():
             self.ruleaza = True
 
         def misca_sus(self):
-            #Calculez spatiul de mutare
+            #moving spot calculate
             muta_la_x = self.xcor()
             muta_la_y = self.ycor() + 50
 
-            #Verific daca spatiul nu este intr-un zid
+            #Check if there's a wall
             if (muta_la_x, muta_la_y) not in ziduri:
                 winsound.PlaySound("./sunete/muta.wav", winsound.SND_ASYNC)
                 self.goto(muta_la_x, muta_la_y)
@@ -281,33 +281,33 @@ def labirint_mimo():
 
         def misca_jos(self):
             
-            #Calculez spatiul de mutare
+            #moving spot calculate
             muta_la_x = soricel.xcor()
             muta_la_y = soricel.ycor() - 50
 
-            #Verific daca spatiul nu este intr-un zid
+            #Check if there's a wall
             if (muta_la_x, muta_la_y) not in ziduri:
                 winsound.PlaySound("./sunete/muta.wav", winsound.SND_ASYNC)
                 self.goto(muta_la_x, muta_la_y)
                 stilou.mutari += 1
 
         def misca_stanga(self):
-            #Calculez spatiul de mutare
+            #moving spot calculate
             muta_la_x = soricel.xcor() - 50
             muta_la_y = soricel.ycor()
             self.shape("./imagini/soricel_stanga.gif")
-            #Verific daca spatiul nu este intr-un zid
+            #Check if there's a wall
             if (muta_la_x, muta_la_y) not in ziduri:
                 winsound.PlaySound("./sunete/muta.wav", winsound.SND_ASYNC)
                 self.goto(muta_la_x, muta_la_y)
                 stilou.mutari += 1
 
         def misca_dreapta(self):
-            #Calculez spatiul de mutare
+            #moving spot calculate
             muta_la_x = soricel.xcor() + 50
             muta_la_y = soricel.ycor()
             self.shape("./imagini/soricel.gif")
-            #Verific daca spatiul nu este intr-un zid
+            #Check if there's a wall
             if (muta_la_x, muta_la_y) not in ziduri:
                 winsound.PlaySound("./sunete/muta.wav", winsound.SND_ASYNC)
                 self.goto(muta_la_x, muta_la_y)
@@ -364,7 +364,8 @@ def labirint_mimo():
                 interfata()
                 fereastra.onscreenclick(mouse_click,1)
                 turtle.done()
-    
+                
+    #Enemy class
     class Inamic(turtle.Turtle):
         def __init__(self,x,y):
             turtle.Turtle.__init__(self)
@@ -418,6 +419,7 @@ def labirint_mimo():
         def restart(self):
             self.goto(self.startx,self.starty)
     
+    #Time class
     class Timp(turtle.Turtle):
         def __init__(self):
             turtle.Turtle.__init__(self)
@@ -454,7 +456,7 @@ def labirint_mimo():
                 fereastra.update()
                 pix.update_vieti()
                 stilou.mutari=0
-        
+    #Pen class
     class Pix(turtle.Turtle):
         def __init__(self):
             turtle.Turtle.__init__(self)
@@ -511,6 +513,7 @@ def labirint_mimo():
                 fereastra.listen()
                 turtle.done()
     
+    #Goal class
     class Cascaval(turtle.Turtle):
         def __init__(self,x,y):
             turtle.Turtle.__init__(self)
@@ -523,10 +526,10 @@ def labirint_mimo():
             self.goto(2000,2000)
             self.hideturtle()
 
-    #Am facut o lista pentru a stoca nivelele
+    #Store levels
     nivele = [""]
 
-    #Primul nivel
+    #First level
     nivel1 = [
     "XXXXXXXXXXXXXXXXXX",
     "XS XXXXXXX       X",
@@ -543,7 +546,7 @@ def labirint_mimo():
     "XXXXXXXXXXXXXXXXXX",
     ]
 
-    #Nivelul 2
+    #Second level
     nivel2 = [
     "XXXXXXXXXXXXXXXXXX",
     "XXXX XXXXXXXX XXXX",
@@ -560,7 +563,7 @@ def labirint_mimo():
     "XXXXXXXXXXXXXXXXXX",
     ]
 
-    #Nivelul 3
+    #Third level
     nivel3 = [
     "XXXXXXXXXXXXXXXXXX",
     "XXXXXXXXXXXXXXXXXX",
@@ -578,22 +581,22 @@ def labirint_mimo():
     ]
 
 
-    #Am creat o lista unde pot salva coordonatele iesirii
+    #Goal coordinates
     coordonate_iesire = []
 
-    #Lista cu coordonatele inamicilor
+    #list with coordinates coordiantes 
 
     coordonate_inamici = []
 
-    #O lista cu coordonatele zidurilor
+    #list with walls coordinates
     ziduri = []
 
-    #Adaug labirintul in lista de labirinte
+    #Add the level to the list of levels
     nivele.append(nivel1)
     nivele.append(nivel2)
     nivele.append(nivel3)
     
-    #Functionalitatea nivelurilor
+    #Levels load
     def incarcare_nivel(nivel):
         for y in range(len(nivel)):
             for x in range(len(nivel[y])):
@@ -643,14 +646,14 @@ def labirint_mimo():
         creion.shape("./imagini/mutari_icon.gif")
         creion.stamp()
 
-    #Crearea unui obiect (proprietatile clasei se transmite obiectului)
+    #mouse object
     soricel = Soricel()
 
     timp = Timp()
     pix = Pix()
     stilou = Pix()
 
-    #Apelare functie cu parametrul nivel 1
+    #call list of levels function with first level
 
     incarcare_nivel(nivele[1])
 
@@ -735,12 +738,12 @@ def labirint_mimo():
                 break
         fereastra.update()
 
-#Verific apasarea click-ului
+#Check mouse click
 def mouse_click(x,y):
     
     if x <= 136 and x >=-117 and y >= 100 and y <= 150:
         fereastra.clearscreen()     
-        #reduc animatiile
+        #reduce animation
         fereastra.tracer(0)
         labirint_mimo()
 
