@@ -1,6 +1,8 @@
 # Mimo-Maze
 This is a maze/puzzle/logic game insipred by tutorials from internet named by me "Mimo Maze".
 
+Feel free to use the cpde
+
 To open the application or game you need the following:
 1. Python
 2. Visual Studio Code (Optional)
