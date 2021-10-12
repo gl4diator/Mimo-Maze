@@ -16,3 +16,4 @@ Install the custom font from "font" directory.
 The application can be run with the command: python.exe mimo.py (in the game directory)
 
 https://github.com/gl4diator/Mimo-Maze
+![Screenshot_15](https://user-images.githubusercontent.com/65448352/136951721-6a790b98-7548-44ee-a1c1-9db61314ecc4.png)
