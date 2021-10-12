@@ -1,8 +1,6 @@
 # Mimo-Maze
 This is a maze/puzzle/logic game insipred by tutorials from internet named by me "Mimo Maze".
 
-Feel free to use the cpde
-
 To open the application or game you need the following:
 1. Python
 2. Visual Studio Code (Optional)
@@ -15,7 +13,7 @@ After installing the python application you need to install some necessary modul
 
 Some of modules probably are not necessary. I just listed them up "just in case".
 
-Install the custom font from "font" directory.
+Install the custom font from "font" directory for a properly and specific design. 
 
 The application can be run with the command: python.exe mimo.py (in the game directory)
 
