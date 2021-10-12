@@ -80,7 +80,7 @@ def interfata():
     pen.up()
     pen.goto(10,10)
     pen.color("black")
-    pen.write("MImo AI", font=("Fire Brathers Personal Use",35,"normal"),align="center")
+    pen.write("Mimo AI", font=("Fire Brathers Personal Use",35,"normal"),align="center")
 
     #butonul 3 de intstructiuni
 
