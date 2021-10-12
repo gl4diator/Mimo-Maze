@@ -13,6 +13,8 @@ After installing the python application you need to install some necessary modul
 3. pip install winsound
 4. pip install random
 
+Some of them probably are not necessary. I just listed them up "just in case".
+
 Install the custom font from "font" directory.
 
 The application can be run with the command: python.exe mimo.py (in the game directory)
