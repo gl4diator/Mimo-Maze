@@ -1,0 +1,4 @@
+pip==21.3
+keyboard==0.13.5
+turtle==0.0.1
+playsound==1.2.2
