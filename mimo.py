@@ -482,7 +482,7 @@ def labirint_mimo():
             self.penup()
             self.goto(0,0)
             self.color("yellow")
-            self.write('OH, NO!!\nThe cat caught you! You lost a life', font=("Kristen ITC",30,"normal"),align="center")
+            self.write('\t      OH, NO!!\nThe cat caught you! You lost a life', font=("Kristen ITC",30,"normal"),align="center")
             fereastra.update()
             winsound.PlaySound("./sunete/viata_pierduta.wav", winsound.SND_ASYNC)
             keyboard.block_key('p')
