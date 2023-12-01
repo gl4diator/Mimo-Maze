@@ -1,5 +1,5 @@
 # Mimo-Maze
-This is a maze/puzzle/logic game insipred by tutorials from internet named by me "Mimo Maze".
+This is a maze/puzzle/logic and adventure game insipred by tutorials from internet named by me "Mimo Maze".
 
 To open the application or game you need to install Python: https://www.python.org/downloads/
 
