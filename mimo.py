@@ -8,26 +8,26 @@ import random
 import IA_mimo as AI
 
 #initialize window
-fereastra = turtle.Screen()
-fereastra.setup(900,700,startx=200,starty=-20)
+window = turtle.Screen()
+window.setup(900,700,startx=200,starty=-20)
 
 #store images for later use
-imagini = ["./imagini/soricel.gif","./imagini/zid1.gif","./imagini/cascaval.gif",
-"./imagini/soricel_stanga.gif","./imagini/zid2.gif","./imagini/zid3.gif",
-"./imagini/vieti.gif","./imagini/ceas.gif","./imagini/mutari_icon.gif","./imagini/castig.gif","./imagini/esc.gif",
-"./imagini/sageti.gif","./imagini/tasta_p.gif","./imagini/pisica_stanga.gif","./imagini/pisica_dreapta.gif"
+images = ["./images/mouse.gif","./images/wall1.gif","./images/cheese.gif",
+"./images/mouse_left.gif","./images/wall2.gif","./images/wall3.gif",
+"./images/lives.gif","./images/clock.gif","./images/moves_icon.gif","./images/win.gif","./images/esc.gif",
+"./images/arrows.gif","./images/key_p.gif","./images/cat_left.gif","./images/cat_right.gif"
 ]
 
-for imagine in imagini:
-    turtle.register_shape(imagine)
+for image in images:
+    turtle.register_shape(image)
 
 #Interface
 
-def interfata():
+def interface():
     #interface design
-    fereastra.title('Mimo')
-    fereastra.bgpic("./imagini/fundal_interfata.png")
-    fereastra.bgcolor("black")
+    window.title('Mimo')
+    window.bgpic("./images/background_interface.png")
+    window.bgcolor("black")
 
     #turtle object for easy work
     pen = turtle.Turtle()
@@ -122,11 +122,11 @@ def interfata():
     pen.write("Quit", font=("Fire Brathers Personal Use",35,"normal"),align="center")
 
 #Call interface funtion()
-interfata()
+interface()
 
 #Define instruction function
-def intstructiuni():
-    fereastra.bgpic("./imagini/fundal_labirint.gif")
+def instructions():
+    window.bgpic("./images/background_maze.gif")
 
     pen2 = turtle.Turtle()
     pen2.hideturtle()
@@ -151,7 +151,7 @@ def intstructiuni():
 
     pen2.up()
     pen2.goto(-300,80)
-    pen2.shape('./imagini/sageti.gif')
+    pen2.shape('./images/arrows.gif')
     pen2.stamp()
     pen2.up()
     pen2.shape(None)
@@ -161,7 +161,7 @@ def intstructiuni():
 
     pen2.up()
     pen2.goto(-300,-5)
-    pen2.shape('./imagini/esc.gif')
+    pen2.shape('./images/esc.gif')
     pen2.stamp()
     pen2.up()
     pen2.shape(None)
@@ -172,7 +172,7 @@ def intstructiuni():
 
     pen2.up()
     pen2.goto(-300,-80)
-    pen2.shape('./imagini/tasta_p.gif')
+    pen2.shape('./images/key_p.gif')
     pen2.stamp()
     pen2.up()
     pen2.shape(None)
@@ -183,7 +183,7 @@ def intstructiuni():
 
     pen2.up()
     pen2.goto(-300,-145)
-    pen2.shape('./imagini/vieti.gif')
+    pen2.shape('./images/lives.gif')
     pen2.color("yellow")
     pen2.stamp()
     pen2.up()
@@ -193,7 +193,7 @@ def intstructiuni():
 
     pen2.up()
     pen2.goto(-300,-200)
-    pen2.shape('./imagini/mutari_icon.gif')
+    pen2.shape('./images/moves_icon.gif')
     pen2.color("yellow")
     pen2.stamp()
     pen2.up()
@@ -203,7 +203,7 @@ def intstructiuni():
 
     pen2.up()
     pen2.goto(-300,-250)
-    pen2.shape('./imagini/ceas.gif')
+    pen2.shape('./images/clock.gif')
     pen2.color("yellow")
     pen2.stamp()
     pen2.up()
@@ -213,7 +213,7 @@ def intstructiuni():
 
     pen2.up()
     pen2.goto(100,70)
-    pen2.shape('./imagini/pisica_stanga.gif')
+    pen2.shape('./images/cat_left.gif')
     pen2.color("yellow")
     pen2.stamp()
     pen2.up()
@@ -223,7 +223,7 @@ def intstructiuni():
 
     pen2.up()
     pen2.goto(100,10)
-    pen2.shape('./imagini/cascaval.gif')
+    pen2.shape('./images/cheese.gif')
     pen2.color("yellow")
     pen2.stamp()
     pen2.up()
@@ -233,7 +233,7 @@ def intstructiuni():
 
     pen2.up()
     pen2.goto(100,-60)
-    pen2.shape('./imagini/soricel.gif')
+    pen2.shape('./images/mouse.gif')
     pen2.color("yellow")
     pen2.stamp()
     pen2.up()
@@ -242,177 +242,180 @@ def intstructiuni():
     pen2.write("- Player", font=("Chiller",25,"normal"),align="left")
 
 
+def block_keys():
+    keyboard.block_key('p')
+    keyboard.block_key("Up")
+    keyboard.block_key("Down")
+    keyboard.block_key("Left")
+    keyboard.block_key("Right")
+    time.sleep(1)
+    keyboard.unhook_all()
 
 #Global variabile for game pause
-pe_pauza = False
+on_pause = False
 
 
 #Game logic and functionality
 
-def labirint_mimo():
+def mimo_maze():
     
     #background image
-    fereastra.bgpic("./imagini/fundal_labirint.gif")
-    fereastra.bgcolor("black")
+    window.bgpic("./images/background_maze.gif")
+    window.bgcolor("black")
 
     #Mouse class
-    class Soricel(turtle.Turtle):
+    class Mouse(turtle.Turtle):
         def __init__(self):
             turtle.Turtle.__init__(self)
-            self.shape("./imagini/soricel.gif")
+            self.shape("./images/mouse.gif")
             self.penup()
             self.speed(0)
-            self.vieti = 3
-            self.nivel = 1
+            self.lives = 3
+            self.level = 1
             self.startx = 0
             self.starty = 0
-            self.ruleaza = True
+            self.running = True
 
-        def misca_sus(self):
+        def move_up(self):
             #moving spot calculate
-            muta_la_x = self.xcor()
-            muta_la_y = self.ycor() + 50
+            move_to_x = self.xcor()
+            move_to_y = self.ycor() + 50
 
             #Check if there's a wall
-            if (muta_la_x, muta_la_y) not in ziduri:
-                winsound.PlaySound("./sunete/muta.wav", winsound.SND_ASYNC)
-                self.goto(muta_la_x, muta_la_y)
-                stilou.mutari += 1
+            if (move_to_x, move_to_y) not in walls and mouse.running:
+                winsound.PlaySound("./sounds/move.wav", winsound.SND_ASYNC)
+                self.goto(move_to_x, move_to_y)
+                pencile.moves += 1
 
-        def misca_jos(self):
+        def move_down(self):
             
             #moving spot calculate
-            muta_la_x = soricel.xcor()
-            muta_la_y = soricel.ycor() - 50
+            move_to_x = mouse.xcor()
+            move_to_y = mouse.ycor() - 50
 
             #Check if there's a wall
-            if (muta_la_x, muta_la_y) not in ziduri:
-                winsound.PlaySound("./sunete/muta.wav", winsound.SND_ASYNC)
-                self.goto(muta_la_x, muta_la_y)
-                stilou.mutari += 1
+            if (move_to_x, move_to_y) not in walls and mouse.running:
+                winsound.PlaySound("./sounds/move.wav", winsound.SND_ASYNC)
+                self.goto(move_to_x, move_to_y)
+                pencile.moves += 1
 
-        def misca_stanga(self):
+        def move_left(self):
             #moving spot calculate
-            muta_la_x = soricel.xcor() - 50
-            muta_la_y = soricel.ycor()
-            self.shape("./imagini/soricel_stanga.gif")
+            move_to_x = mouse.xcor() - 50
+            move_to_y = mouse.ycor()
             #Check if there's a wall
-            if (muta_la_x, muta_la_y) not in ziduri:
-                winsound.PlaySound("./sunete/muta.wav", winsound.SND_ASYNC)
-                self.goto(muta_la_x, muta_la_y)
-                stilou.mutari += 1
+            if (move_to_x, move_to_y) not in walls and mouse.running:
+                self.shape("./images/mouse_left.gif")
+                winsound.PlaySound("./sounds/move.wav", winsound.SND_ASYNC)
+                self.goto(move_to_x, move_to_y)
+                pencile.moves += 1
 
-        def misca_dreapta(self):
+        def move_right(self):
             #moving spot calculate
-            muta_la_x = soricel.xcor() + 50
-            muta_la_y = soricel.ycor()
-            self.shape("./imagini/soricel.gif")
+            move_to_x = mouse.xcor() + 50
+            move_to_y = mouse.ycor()
             #Check if there's a wall
-            if (muta_la_x, muta_la_y) not in ziduri:
-                winsound.PlaySound("./sunete/muta.wav", winsound.SND_ASYNC)
-                self.goto(muta_la_x, muta_la_y)
-                stilou.mutari += 1
+            if (move_to_x, move_to_y) not in walls and mouse.running:
+                self.shape("./images/mouse.gif")
+                winsound.PlaySound("./sounds/move.wav", winsound.SND_ASYNC)
+                self.goto(move_to_x, move_to_y)
+                pencile.moves += 1
 
-        def coliziune(self, alt_obiect):
-            a = self.xcor()-alt_obiect.xcor()
-            b = self.ycor()-alt_obiect.ycor()
-            distanta = math.sqrt((a ** 2) + (b ** 2))
+        def collision(self, another_obj):
+            a = self.xcor()-another_obj.xcor()
+            b = self.ycor()-another_obj.ycor()
+            distance = math.sqrt((a ** 2) + (b ** 2))
 
-            if distanta < 10 :
+            if distance < 10 :
                 return True
             else:
                 return False
         
-        def urmatorul_nivel(self):
+        def next_level(self):
             self.up()
             self.goto(10,1)
             self.color("yellow")
-            self.write(f"Level {soricel.nivel-1} completed!", font=("Colonna MT",40,"bold"),align="center")
-            keyboard.block_key("Up")
-            keyboard.block_key("Down")
-            keyboard.block_key("Left")
-            keyboard.block_key("Right")
-            time.sleep(2)
-            keyboard.unhook_all()
+            self.write(f"Level {mouse.level-1} completed!", font=("Colonna MT",40,"bold"),align="center")
             self.clear()
-            nivele.pop(1)
+            levels.pop(1)
             turtle.clearstamps()
-            ziduri.clear()
-            coordonate_inamici.clear()
+            walls.clear()
+            enemies_coords.clear()
+            block_keys()
             try:
-                incarcare_nivel(nivele[1])
-                if soricel.nivel==2:
-                    for inamic in coordonate_inamici:
-                        Inamic.miscare(inamic)
-                if soricel.nivel==3:
-                    for inamic in coordonate_inamici:
-                        Inamic.miscare(inamic)
+                load_level(levels[1])
+                if mouse.level==2:
+                    for enemy in enemies_coords:
+                        Enemy.movement(enemy)
+                if mouse.level==3:
+                    for enemy in enemies_coords:
+                        Enemy.movement(enemy)
             except:
                 IndexError
-                soricel.ruleaza = False
-                fereastra.clearscreen()
-                fereastra.bgcolor("black")
+                mouse.running = False
+                window.clearscreen()
+                window.bgcolor("black")
                 self.goto(0,100)
-                self.shape("./imagini/castig.gif")
+                self.shape("./images/win.gif")
                 self.stamp()
                 self.up()
                 self.goto(0,-200)
                 self.color("yellow")
                 self.write("You won all levels!\nCongratulations!!", font=("Colonna MT",40,"bold"),align="center")
                 time.sleep(2)
-                fereastra.clearscreen()
-                interfata()
-                fereastra.onscreenclick(mouse_click,1)
+                window.clearscreen()
+                interface()
+                window.onscreenclick(mouse_click,1)
                 turtle.done()
                 
     #Enemy class
-    class Inamic(turtle.Turtle):
+    class Enemy(turtle.Turtle):
         def __init__(self,x,y):
             turtle.Turtle.__init__(self)
-            self.shape("./imagini/pisica_stanga.gif")
+            self.shape("./images/cat_left.gif")
             self.penup()
             self.startx = x
             self.starty = y
             self.speed(0)
             self.goto(x,y)
-            self.directie = random.choice(["sus","jos","stanga","dreapta"])
+            self.direction = random.choice(["up","down","left","right"])
     
-        def miscare(self):
-            if soricel.ruleaza:
-                for pisica in coordonate_inamici:
-                    if soricel.coliziune(pisica):
+        def movement(self):
+            if mouse.running:
+                for cat in enemies_coords:
+                    if mouse.collision(cat):
                         self.goto(self.startx,self.starty)
-                        soricel.goto(soricel.startx,soricel.starty)
-                if self.directie == "sus":
+                        mouse.goto(mouse.startx,mouse.starty)
+                if self.direction == "up":
                     x  = 0
                     y = 50
-                elif self.directie == "jos":
+                elif self.direction == "down":
                     x = 0
                     y = -50
-                elif self.directie == "stanga":
+                elif self.direction == "left":
                     x = -50
                     y = 0
-                elif self.directie == "dreapta":
+                elif self.direction == "right":
                     x = 50
                     y = 0
                 else:
                     x = 0
                     y = 0
                 
-                muta_x = self.xcor() + x
-                muta_y = self.ycor() + y
+                move_x = self.xcor() + x
+                move_y = self.ycor() + y
 
-                if (muta_x,muta_y) not in ziduri:
-                    self.goto(muta_x,muta_y)
+                if (move_x,move_y) not in walls:
+                    self.goto(move_x,move_y)
                 else:
-                    self.directie = random.choice(["sus","jos","stanga","dreapta"])
-                    if self.directie == "dreapta":
-                        self.shape("./imagini/pisica_dreapta.gif")
-                    elif self.directie == "stanga":
-                        self.shape("./imagini/pisica_stanga.gif")
-                turtle.ontimer(self.miscare,t = random.randint(100,300))
+                    self.direction = random.choice(["up","down","left","right"])
+                    if self.direction == "right":
+                        self.shape("./images/cat_right.gif")
+                    elif self.direction == "left":
+                        self.shape("./images/cat_left.gif")
+                turtle.ontimer(self.movement,t = random.randint(100,300))
 
-        def distruge(self):
+        def destroy(self):
             self.goto(2000,2000)
             self.hideturtle()
 
@@ -420,122 +423,111 @@ def labirint_mimo():
             self.goto(self.startx,self.starty)
     
     #Time class
-    class Timp(turtle.Turtle):
+    class Time(turtle.Turtle):
         def __init__(self):
             turtle.Turtle.__init__(self)
             self.hideturtle()
             self.penup()
-            self.timp = 10
+            self.time = 10
+            self.blinkings_number = 100
     
-        def contor_timp(self):
-            if soricel.ruleaza:
-                fereastra.ontimer(self.clear,1000)
-                min, sec = divmod(self.timp, 60)
-                formatimp = '{:02d}:{:02d}'.format(min, sec)
+        def counter(self):
+            if mouse.running:
+                window.ontimer(self.clear,1000)
+                min, sec = divmod(self.time, 60)
+                format_time = '{:02d}:{:02d}'.format(min, sec)
                 self.goto(405,310)
                 self.color("cyan")
-                self.write(f'{formatimp}', font=("Kristen ITC",20,"normal"),align="center")
-                self.timp -= 1
-            fereastra.ontimer(self.contor_timp,1000)
-            
+                self.write(f'{format_time}', font=("Kristen ITC",20,"normal"),align="center")
+                self.time -= 1
+                window.ontimer(self.counter,1000)
+            else:
+                for turtle_obj in turtle.Screen()._turtles:
+                    if turtle_obj is mouse:
+                        min, sec = divmod(0, 60)
+                        format_time = '{:02d}:{:02d}'.format(min, sec)
+                        self.goto(405,310)
+                        self.color("cyan")
+                        self.write(f'{format_time}', font=("Kristen ITC",20,"normal"),align="center")
 
-        def viata_pierduta(self):
+        def lost_life(self):
                 self.goto(0,0)
                 self.color("yellow")
                 self.write("Time is out...\nYou lost a life!",font=("Kristen ITC",35,"normal"),align="center")
-                fereastra.update()
-                winsound.PlaySound("./sunete/viata_pierduta.wav", winsound.SND_ASYNC)
-                keyboard.block_key('p')
-                keyboard.block_key("Up")
-                keyboard.block_key("Down")
-                keyboard.block_key("Left")
-                keyboard.block_key("Right")
-                time.sleep(2)
+                window.update()
+                winsound.PlaySound("./sounds/life_lost.wav", winsound.SND_ASYNC)
+                block_keys()
+                self.time = 10
+                for _ in range(pencile.moves):
+                    mouse.undo()
+                window.update()
+                pen.update_lives()
+                pencile.moves=0
                 keyboard.unhook_all()
-                self.timp = 10
-                for _ in range(stilou.mutari):
-                    soricel.undo()
-                fereastra.update()
-                pix.update_vieti()
-                stilou.mutari=0
     #Pen class
-    class Pix(turtle.Turtle):
+    class Pen(turtle.Turtle):
         def __init__(self):
             turtle.Turtle.__init__(self)
             self.hideturtle()
             self.penup()
-            self.mutari=0
+            self.moves=0
 
-        def update_vieti(self):
+        def update_lives(self):
             self.clear()
             self.goto(-390,312)
             self.color("cyan")
-            self.write(f'{soricel.vieti}', font=("Kristen ITC",20,"normal"),align="center")
+            self.write(f'{mouse.lives}', font=("Kristen ITC",20,"normal"),align="center")
         
-        def update_mutari(self):
+        def update_moves(self):
             self.clear()
             self.goto(-335,312)
             self.color("cyan")
-            self.write(f'{self.mutari}', font=("Kristen ITC",20,"normal"),align="center")
+            self.write(f'{self.moves}', font=("Kristen ITC",20,"normal"),align="center")
         
-        def pierdere_viata(self):
+        def life_lost(self):
             self.penup()
             self.goto(0,0)
             self.color("yellow")
+            winsound.PlaySound("./sounds/life_lost.wav", winsound.SND_ASYNC)
             self.write('\t      OH, NO!!\nThe cat caught you! You lost a life', font=("Kristen ITC",30,"normal"),align="center")
-            fereastra.update()
-            winsound.PlaySound("./sunete/viata_pierduta.wav", winsound.SND_ASYNC)
-            keyboard.block_key('p')
-            keyboard.block_key("Up")
-            keyboard.block_key("Down")
-            keyboard.block_key("Left")
-            keyboard.block_key("Right")
-            time.sleep(2)
-            keyboard.unhook_all()
-            timp.timp = 10
-            stilou.mutari=0
-            pix.update_vieti()
+            window.update()
+            block_keys()
+            pen_time.time = 10
+            pencile.moves=0
+            pen.update_lives()
 
-        def fara_vieti(self):
-                soricel.ruleaza = False
-                stilou.update_mutari()
+        def out_of_lives(self):
+                mouse.running = False
+                pencile.update_moves()
                 self.penup()
                 self.goto(0,0)
                 self.color("yellow")
                 self.write('Out of lives..\nGame Over!', font=("Kristen ITC",30,"normal"),align="center")
-                fereastra.update()
+                window.update()
+                block_keys()
+                blinking_text()
+                window.listen()
+                window.onkey(back_to_interaface,"Return")
                 
-                keyboard.block_key('p')
-                keyboard.block_key("Up")
-                keyboard.block_key("Down")
-                keyboard.block_key("Left")
-                keyboard.block_key("Right")
-                time.sleep(2)
-                fereastra.clearscreen()
-                interfata()
-                keyboard.unhook_all()
-                fereastra.onscreenclick(mouse_click,1)
-                fereastra.listen()
-                turtle.done()
     
     #Goal class
-    class Cascaval(turtle.Turtle):
+    class Cheese(turtle.Turtle):
         def __init__(self,x,y):
             turtle.Turtle.__init__(self)
-            self.shape("./imagini/cascaval.gif")
+            self.shape("./images/cheese.gif")
             self.penup()
             self.speed(0)
             self.goto(x,y)
         
-        def distruge(self):
+        def destroy(self):
             self.goto(2000,2000)
             self.hideturtle()
 
     #Store levels
-    nivele = [""]
+    levels = [""]
 
     #First level
-    nivel1 = [
+    level1 = [
     "XXXXXXXXXXXXXXXXXX",
     "XS XXXXXXX       X",
     "X  XXXXXXX  XXXXXX",
@@ -552,7 +544,7 @@ def labirint_mimo():
     ]
 
     #Second level
-    nivel2 = [
+    level2 = [
     "XXXXXXXXXXXXXXXXXX",
     "XXXX XXXXXXXX XXXX",
     "XXXX XXXXXXXX XXXX",
@@ -569,7 +561,7 @@ def labirint_mimo():
     ]
 
     #Third level
-    nivel3 = [
+    level3 = [
     "XXXXXXXXXXXXXXXXXX",
     "XXXXXXXXXXXXXXXXXX",
     "XXXX  P       XXXX",
@@ -585,198 +577,229 @@ def labirint_mimo():
     "XXXXXXXXXXXXXXXXXX",
     ]
 
-
     #Goal coordinates
-    coordonate_iesire = []
+    exit_coords = []
 
     #list with coordinates coordiantes 
 
-    coordonate_inamici = []
+    enemies_coords = []
 
     #list with walls coordinates
-    ziduri = []
+    walls = []
 
     #Add the level to the list of levels
-    nivele.append(nivel1)
-    nivele.append(nivel2)
-    nivele.append(nivel3)
+    levels.append(level1)
+    levels.append(level2)
+    levels.append(level3)
     
     #Levels load
-    def incarcare_nivel(nivel):
-        for y in range(len(nivel)):
-            for x in range(len(nivel[y])):
+    def load_level(level):
+        for y in range(len(level)):
+            for x in range(len(level[y])):
 
-                caracter = nivel[y][x]
+                character = level[y][x]
 
-                coordonata_x = -425 + (x*50)
-                coordonata_y = 285 - (y*50)
+                coord_x = -425 + (x*50)
+                coord_y = 285 - (y*50)
 
-                if caracter == "X":
+                if character == "X":
                     turtle.penup()
                     turtle.speed(0)
-                    turtle.goto(coordonata_x,coordonata_y)
-                    turtle.shape("./imagini/zid1.gif")
-                    if soricel.nivel==2:
-                        turtle.shape("./imagini/zid2.gif")
-                    elif soricel.nivel==3:
-                        turtle.shape("./imagini/zid3.gif")
+                    turtle.goto(coord_x,coord_y)
+                    turtle.shape("./images/wall1.gif")
+                    if mouse.level==2:
+                        turtle.shape("./images/wall2.gif")
+                    elif mouse.level==3:
+                        turtle.shape("./images/wall3.gif")
                     turtle.stamp()
 
-                    ziduri.append((coordonata_x,coordonata_y))
+                    walls.append((coord_x,coord_y))
                 
-                if caracter == "S":
-                    soricel.goto(coordonata_x,coordonata_y)
-                    soricel.startx = coordonata_x
-                    soricel.starty = coordonata_y
+                if character == "S":
+                    mouse.goto(coord_x,coord_y)
+                    mouse.startx = coord_x
+                    mouse.starty = coord_y
 
-                if caracter == "C":
-                    coordonate_iesire.append(Cascaval(coordonata_x,coordonata_y))
+                if character == "C":
+                    exit_coords.append(Cheese(coord_x,coord_y))
 
-                if caracter == "P":
-                    coordonate_inamici.append(Inamic(coordonata_x,coordonata_y))
-                    timp.inamic_startx = coordonata_x
-                    timp.inamic_starty = coordonata_y
+                if character == "P":
+                    enemies_coords.append(Enemy(coord_x,coord_y))
 
         creion = turtle.Turtle()
-        creion.shape("./imagini/vieti.gif")
+        creion.shape("./images/lives.gif")
         creion.penup()
         creion.goto(-422,330)
         creion.stamp()
         creion.penup()
         creion.goto(350,330)
-        creion.shape("./imagini/ceas.gif")
+        creion.shape("./images/clock.gif")
         creion.stamp()
         creion.penup()
         creion.goto(-364,330)
-        creion.shape("./imagini/mutari_icon.gif")
+        creion.shape("./images/moves_icon.gif")
         creion.stamp()
 
     #mouse object
-    soricel = Soricel()
+    mouse = Mouse()
 
-    timp = Timp()
-    pix = Pix()
-    stilou = Pix()
+    pen_time = Time()
+    pen = Pen()
+    pencile = Pen()
+    #keep referrence to turtles you want to keep
+    turtles_to_keep = [pen_time]
+
+    #function to get back in the interface
+    def back_to_interaface():
+        for turtle_obj in turtle.Screen()._turtles:
+            if turtle_obj not in turtles_to_keep:
+                turtle_obj.reset()
+                turtle_obj.hideturtle()
+                turtle_obj.getscreen()._turtles.remove(turtle_obj)
+        window.clearscreen()
+        interface()
+        window.onscreenclick(mouse_click,1)
+        window.listen()
+        turtle.done()
 
     #call list of levels function with first level
 
-    incarcare_nivel(nivele[1])
+    load_level(levels[1])
 
-    timp.contor_timp()
+    pen_time.counter()
 
-    pix.update_vieti()
+    pen.update_lives()
     
     pic = turtle.Turtle()
     pic.hideturtle()
 
-    def pune_pauza():
-        global pe_pauza
-        if pe_pauza == True:
-            pe_pauza = False
+
+    blinking_turtle = turtle.Turtle()
+    blinking_turtle.hideturtle()
+
+    def blinking_text():
+        for turtle_obj in turtle.Screen()._turtles:
+            if turtle_obj is mouse and pen_time.blinkings_number > 0:
+                window.ontimer(blinking_turtle.clear,600)
+                blinking_turtle.penup()
+                blinking_turtle.goto(0,window.window_height()/2-40)
+                blinking_turtle.color("yellow")
+                blinking_turtle.write(f'{"Press enter key to exit"}', font=("Kristen ITC",20,"normal"),align="center")
+                pen_time.blinkings_number -= 1
+                blinking_turtle.hideturtle()
+                time.sleep(0.3)
+                window.ontimer(blinking_text,600)
+
+    def pause():
+        global on_pause
+        if on_pause == True:
+            on_pause = False
             pic.clear()
-            soricel.ruleaza = True
-            fereastra.onkey(soricel.misca_stanga,"Left")
-            fereastra.onkey(soricel.misca_dreapta,"Right")
-            fereastra.onkey(soricel.misca_sus,"Up")
-            fereastra.onkey(soricel.misca_jos,"Down")
-            for inamic in coordonate_inamici:
-                Inamic.miscare(inamic)
+            mouse.running = True
+            window.onkey(mouse.move_left,"Left")
+            window.onkey(mouse.move_right,"Right")
+            window.onkey(mouse.move_up,"Up")
+            window.onkey(mouse.move_down,"Down")
+            for enemy in enemies_coords:
+                Enemy.movement(enemy)
         else:
-            pe_pauza = True
+            on_pause = True
             pic.penup()
             pic.goto(10,1)
             pic.color("yellow")
             pic.write("Game paused!", font=("Colonna MT",40,"bold"),align="center")
-            soricel.ruleaza=False
-            fereastra.onkey(None, "Up")
-            fereastra.onkey(None, "Down")
-            fereastra.onkey(None, "Left")
-            fereastra.onkey(None, "Right")
+            mouse.running=False
+            window.onkey(None, "Up")
+            window.onkey(None, "Down")
+            window.onkey(None, "Left")
+            window.onkey(None, "Right")
 
-    #Asteptarea unei taste
-    fereastra.listen()
-    fereastra.onkey(soricel.misca_stanga,"Left")
-    fereastra.onkey(soricel.misca_dreapta,"Right")
-    fereastra.onkey(soricel.misca_sus,"Up")
-    fereastra.onkey(soricel.misca_jos,"Down")
-    fereastra.onkey(pune_pauza,"p")
+    #Waiting for a key
+    window.listen()
+    window.onkey(mouse.move_left,"Left")
+    window.onkey(mouse.move_right,"Right")
+    window.onkey(mouse.move_up,"Up")
+    window.onkey(mouse.move_down,"Down")
+    window.onkey(pause,"p")
 
-    for inamic in coordonate_inamici:
-        Inamic.miscare(inamic)
+    for enemy in enemies_coords:
+        Enemy.movement(enemy)
 
     while True:
-        if soricel.ruleaza:
-            stilou.update_mutari()
-            for cascaval in coordonate_iesire:
-                if soricel.coliziune(cascaval):
-                    Cascaval.distruge(cascaval)
-                    fereastra.update()
-                    soricel.nivel += 1
-                    for inamic in coordonate_inamici:
-                        Inamic.distruge(inamic)
-                    soricel.urmatorul_nivel()
-                    timp.timp = 10
-                    stilou.mutari = 0
+        if mouse.running:
+            pencile.update_moves()
+            for cheese in exit_coords:
+                if mouse.collision(cheese):
+                    Cheese.destroy(cheese)
+                    window.update()
+                    mouse.level += 1
+                    for enemy in enemies_coords:
+                        Enemy.destroy(enemy)
+                    mouse.next_level()
+                    pen_time.time = 10
+                    pencile.moves = 0
             
-            for inamic in coordonate_inamici:
-                if soricel.coliziune(inamic):
-                    soricel.vieti -=1
-                    pix.pierdere_viata()
+            for enemy in enemies_coords:
+                if mouse.collision(enemy):
+                    mouse.lives -=1
+                    pen.life_lost() 
+                    #time.sleep(1.5)
 
-            if timp.timp < 0 :
-                soricel.vieti -= 1
-                for inamic in coordonate_inamici:
-                    Inamic.restart(inamic)
-                if soricel.vieti >= 1:
-                    timp.viata_pierduta()
+            if pen_time.time < 0 :
+                mouse.lives -= 1
+                for enemy in enemies_coords:
+                    Enemy.restart(enemy)
 
-            if soricel.vieti == 0:
-                pix.update_vieti()
-                pix.fara_vieti()
+                if mouse.lives >= 1:
+                    pen_time.lost_life()
+
+            if mouse.lives == 0:
+                pen.update_lives()
+                pen.out_of_lives()
 
             if keyboard.is_pressed('Escape'):
-                soricel.ruleaza = False
-                fereastra.clearscreen()
-                interfata()
-                fereastra.onscreenclick(mouse_click,1)
+                mouse.running = False
+                window.clearscreen()
+                interface()
+                window.onscreenclick(mouse_click,1)
                 turtle.done()
                 break
-        fereastra.update()
+        window.update()
 
 #Check mouse click
 def mouse_click(x,y):
     
     if x <= 136 and x >=-117 and y >= 100 and y <= 150:
-        fereastra.clearscreen()     
+        window.clearscreen()     
         #reduce animation
-        fereastra.tracer(0)
-        labirint_mimo()
+        window.tracer(0)
+        mimo_maze()
 
     elif x <= 125 and x >= -101 and y >= 16 and y <= 65:
-        fereastra.clearscreen()
-        while True:    
-            AI.ruleaza_IA()
+        window.clearscreen()
+        while True:
+            AI.run_AI()
             break
-        interfata()
-        fereastra.onscreenclick(mouse_click,1)
+        interface()
+        window.onscreenclick(mouse_click,1)
         turtle.done()
     
     elif x <= 105 and x >= -82 and y >= -70 and y <= -20:
-        fereastra.clearscreen()
-        intstructiuni()
+        window.clearscreen()
+        instructions()
         while True:
             if keyboard.is_pressed('Escape'):
-                fereastra.clearscreen()
-                interfata()
-                fereastra.onscreenclick(mouse_click,1)
+                window.clearscreen()
+                interface()
+                window.onscreenclick(mouse_click,1)
                 turtle.done()
                 break
-            fereastra.update()
+            window.update()
                 
     elif x>=-62 and x <= 91 and y  <=-98 and y >= -149:
-        sys.exit(0)
+        turtle.bye()
 
-fereastra.onscreenclick(mouse_click,1)
-fereastra.listen()
+window.onscreenclick(mouse_click,1)
+window.listen()
 
 turtle.done()

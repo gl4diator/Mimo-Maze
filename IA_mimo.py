@@ -1,14 +1,14 @@
 import turtle
 import time
 
-#initializare fereastra
+#intialize turtle window
 wn = turtle.Screen()
 
-#definirea nivelelor global
+#define levels globally
 
-nivele = [""]
+levels = [""]
 
-nivel1 = [
+level1 = [
 "XXXXXXXXXXXXXXXXXX",
 "XS XXXXXXX       X",
 "X  XXXXXXX  XXXXXX",
@@ -24,8 +24,8 @@ nivel1 = [
 "XXXXXXXXXXXXXXXXXX",
 ]
 
-#Nivelul 2
-nivel2 = [
+#level 2
+level2 = [
 "XXXXXXXXXXXXXXXXXX",
 "XXXX XXXXXXXX XXXX",
 "XXXX XXXXXXXX XXXX",
@@ -41,8 +41,8 @@ nivel2 = [
 "XXXXXXXXXXXXXXXXXX",
 ]
 
-#Nivelul 3
-nivel3 = [
+#level 3
+level3 = [
 "XXXXXXXXXXXXXXXXXX",
 "XXXXXXXXXXXXXXXXXX",
 "XXXX          XXXX",
@@ -58,250 +58,249 @@ nivel3 = [
 "XXXXXXXXXXXXXXXXXX",
 ]
 
-#Adaug labirintul in lista de labirinte
-nivele.append(nivel1)
-nivele.append(nivel2)
-nivele.append(nivel3)
+#Add maze in the list of mazes
+levels.append(level1)
+levels.append(level2)
+levels.append(level3)
 
-nivel_actual = 1
+current_level = 1
 
-class Nod():
-    def __init__(self, stare, stare_anterioara, actiune):
-        self.stare = stare
-        self.stare_anterioara = stare_anterioara
-        self.actiune = actiune
+class Node():
+    def __init__(self, state, previous_state, action):
+        self.state = state
+        self.previous_state = previous_state
+        self.action = action
 
-class Frontiera_lifo():
+class frontier_lifo():
     
-    #Frontiera reprezinta o lista goala initial
+    #the frontier is a empty list at the start
     def __init__(self):
-        self.frontiera = []
+        self.frontier = []
+    #function to add a node to the end of the frontier list
+    def add(self, node):
+        self.frontier.append(node)
 
-    #functie care adauga un nod la sfarsitul listei frontiera []
-    def adauga(self, nod):
-        self.frontiera.append(nod)
+    #function to check a certain state
+    def check_state(self, state):
+        return any(node.state == state for node in self.frontier)
 
-    #functie care verifica o stare anume/particulara
-    def verifica_stare(self, stare):
-        return any(nod.stare == stare for nod in self.frontiera)
+    #Check if frontier is empty
+    def empty_frontier(self):
+        return len(self.frontier) == 0
 
-    #Verific daca frontiera este goala
-    def frontiera_goala(self):
-        return len(self.frontiera) == 0
-
-    #Sterge din frontiera si verific intai daca nu este goala
-    def sterge(self):
-        if self.frontiera_goala():
-            raise Exception("Frontiera goala!")
+    #remove from the frontier and check if it's not empty
+    def remove(self):
+        if self.empty_frontier():
+            raise Exception("frontier goala!")
         else:
-            #LIFO-last in first out (ultimul element din lista este primul scos din lista)
-            nod = self.frontiera[-1] #ultimul element din lista 
-            self.frontiera = self.frontiera[:-1] #inlatur acel nod din frontiera 
-            return nod #returnez nodul ca rezultat
+            #LIFO-last in first out (the last element from the list is the first out from the list)
+            node = self.frontier[-1] #remove the last element from the list
+            self.frontier = self.frontier[:-1] #remove the node from the frontier 
+            return node #return the node as result
 
-class mimo_IA(turtle.Turtle):
-    def __init__(self,nivel):
+class mimo_AI(turtle.Turtle):
+    def __init__(self,level):
         turtle.Turtle.__init__(self)
         self.hideturtle()
 
         wn.bgcolor("black")
-        wn.bgpic("./imagini/fundal_labirint.gif")
+        wn.bgpic("./images/background_maze.gif")
             
         start = 0
-        iesire = 0
+        goal = 0
 
-        self.inaltime = len(nivel)
-        self.lungime = max(len(linie) for linie in nivel)
+        self.height = len(level)
+        self.length = max(len(row) for row in level)
 
-        # Lista pentru stocarea coordonatelor de la ziduri
-        self.ziduri = []
+        #List for storing walls coords
+        self.walls = []
 
-        for i in range(self.inaltime):
-            zid = []
-            for j in range(self.lungime):
+        for i in range(self.height):
+            wall = []
+            for j in range(self.length):
 
-                start += (nivel[i][j].count('S'))
-                iesire += (nivel[i][j].count('C'))
+                start += (level[i][j].count('S'))
+                goal += (level[i][j].count('C'))
 
                 try:
-                    if nivel[i][j] == "S":
+                    if level[i][j] == "S":
                         self.start = (i, j)
-                        zid.append(False)
-                    elif nivel[i][j] == "C":
-                        self.iesire = (i, j)
-                        zid.append(False)
-                    elif nivel[i][j] == "E":
-                        zid.append(False)
-                    elif nivel[i][j] == " ":
-                        zid.append(False)
-                    elif nivel[i][j] == "X":
-                        zid.append(True)
+                        wall.append(False)
+                    elif level[i][j] == "C":
+                        self.goal = (i, j)
+                        wall.append(False)
+                    elif level[i][j] == "E":
+                        wall.append(False)
+                    elif level[i][j] == " ":
+                        wall.append(False)
+                    elif level[i][j] == "X":
+                        wall.append(True)
                     else:
-                        zid.append(False)
+                        wall.append(False)
                 except IndexError:
-                    zid.append(False)
-            self.ziduri.append(zid)
+                    wall.append(False)
+            self.walls.append(wall)
 
-        self.solutie = None
+        self.solution = None
 
-        #Verificare daca este o singura iesire(un singur scop) si un singur start
+        #Check if there's only one goal and one start point
         if start != 1:
             raise Exception("The maze should have one start point!!")
-        if iesire != 1:
+        if goal != 1:
             raise Exception("The maze should have one Goal!!")
     
-    def anima_soricel(self):
+    def animate_mouse(self):
         
         soricel = turtle.Turtle()
         soricel.hideturtle()
         soricel.penup()
-        soricel.shape("./imagini/soricel.gif")
+        soricel.shape("./images/mouse.gif")
 
-        solutie = self.solutie[1] if self.solutie is not None else None
+        solution = self.solution[1] if self.solution is not None else None
         
-        for i, linie in enumerate(self.ziduri):
-            for j,zid in enumerate(linie):
-                if zid:
+        for i, row in enumerate(self.walls):
+            for j,wall in enumerate(row):
+                if wall:
                     pass
-                elif solutie is not None and (i, j) in solutie:
+                elif solution is not None and (i, j) in solution:
                     soricel.goto(-425+j*50,285-i*50)
                     soricel.showturtle()
                     time.sleep(0.1)
-                    if (i, j) == self.iesire:
-                        global nivel_actual
-                        nivel_actual += 1
-                        print(f"The shortest path:{len(self.solutie[1])} mutari")
+                    if (i, j) == self.goal:
+                        global current_level
+                        current_level += 1
+                        print(f"The shortest path:{len(self.solution[1])} moves")
                         wn.clearscreen()
-                        nivele.pop(1)
+                        levels.pop(1)
                         try:
-                            ruleaza_IA()
+                            run_AI()
                         except:
                             IndexError
                             print("IA won the game!")
                             wn.clearscreen()
-                            nivele.append(nivel1)
-                            nivele.append(nivel2)
-                            nivele.append(nivel3)
+                            levels.append(level1)
+                            levels.append(level2)
+                            levels.append(level3)
                             return False
 
-    def afiseaza(self):
-        creion = turtle.Turtle()
-        creion.hideturtle()
-        creion.penup()
-        creion.speed(0)
+    def display(self):
+        pencil = turtle.Turtle()
+        pencil.hideturtle()
+        pencil.penup()
+        pencil.speed(0)
 
-        solutie = self.solutie[1] if self.solutie is not None else None
+        solution = self.solution[1] if self.solution is not None else None
 
-        for i, linie in enumerate(self.ziduri):
-            for j, zid in enumerate(linie):
-                if zid:
+        for i, row in enumerate(self.walls):
+            for j, wall in enumerate(row):
+                if wall:
                     print("█", end="")
-                    creion.shape("./imagini/zid1.gif")
-                    if nivel_actual == 2:
-                        creion.shape("./imagini/zid2.gif")
-                    if nivel_actual == 3:
-                        creion.shape("./imagini/zid3.gif")
-                    creion.goto(-425+j*50,285-i*50)
-                    creion.stamp()
+                    pencil.shape("./images/wall1.gif")
+                    if current_level == 2:
+                        pencil.shape("./images/wall2.gif")
+                    if current_level == 3:
+                        pencil.shape("./images/wall3.gif")
+                    pencil.goto(-425+j*50,285-i*50)
+                    pencil.stamp()
                 elif (i, j) == self.start:
                     print("S", end="")
-                    creion.goto(-425+j*50,285-i*50)
-                    creion.shape("square")
-                    creion.color("green")
-                    creion.shapesize(2.2)
-                    creion.stamp()
-                elif (i, j) == self.iesire:
+                    pencil.goto(-425+j*50,285-i*50)
+                    pencil.shape("square")
+                    pencil.color("green")
+                    pencil.shapesize(2.2)
+                    pencil.stamp()
+                elif (i, j) == self.goal:
                     print("C", end="")
-                    creion.shape("./imagini/cascaval.gif")
-                    creion.goto(-425+j*50,285-i*50)
-                    creion.stamp()
+                    pencil.shape("./images/cheese.gif")
+                    pencil.goto(-425+j*50,285-i*50)
+                    pencil.stamp()
                     
-                elif solutie is not None and (i, j) in solutie:
+                elif solution is not None and (i, j) in solution:
                     print("*", end="") 
-                    creion.goto(-425+j*50,285-i*50)
-                    creion.shape("square")
-                    creion.color("yellow")
-                    creion.shapesize(2.2)
-                    creion.stamp()
-                elif solutie is not None and (i, j) in self.explorate:
+                    pencil.goto(-425+j*50,285-i*50)
+                    pencil.shape("square")
+                    pencil.color("yellow")
+                    pencil.shapesize(2.2)
+                    pencil.stamp()
+                elif solution is not None and (i, j) in self.explored:
                     print(" ", end="")   
-                    creion.goto(-425+j*50,285-i*50)
-                    creion.shape("square")
-                    creion.color("blue")
-                    creion.shapesize(2.2)
-                    creion.stamp()
+                    pencil.goto(-425+j*50,285-i*50)
+                    pencil.shape("square")
+                    pencil.color("blue")
+                    pencil.shapesize(2.2)
+                    pencil.stamp()
                 else:
                     print(" ", end="")
 
             print()
 
-    def vecini(self, stare):
-        linie, coloana = stare
-        optiuni = [
-            ("sus", (linie - 1, coloana)),
-            ("jos", (linie + 1, coloana)),
-            ("stanga", (linie, coloana - 1)),
-            ("dreapta", (linie, coloana + 1))
+    def neighbours(self, state):
+        row, column = state
+        options = [
+            ("up", (row - 1, column)),
+            ("down", (row + 1, column)),
+            ("left", (row, column - 1)),
+            ("right", (row, column + 1))
         ]
 
-        rezultat = []
-        for actiune, (r, c) in optiuni:
-            if 0 <= r < self.inaltime and 0 <= c < self.lungime and not self.ziduri[r][c]:
-                rezultat.append((actiune, (r, c)))
-        return rezultat
+        result = []
+        for action, (r, c) in options:
+            if 0 <= r < self.height and 0 <= c < self.length and not self.walls[r][c]:
+                result.append((action, (r, c)))
+        return result
 
-    def rezolvare(self):
+    def solve(self):
 
-        self.stari_explorate = 0
+        self.nodes_explored = 0
 
-        #Initializez frontiera cu pozitia de start
-        start = Nod(stare=self.start, stare_anterioara=None, actiune=None)
-        frontiera = Frontiera_lifo()
-        frontiera.adauga(start)
+        #Initialize frontier with the start position
+        start = Node(state=self.start, previous_state=None, action=None)
+        frontier = frontier_lifo()
+        frontier.add(start)
 
-        # Initializez un set de stari explorate gol
-        self.explorate = set()
+        # Initialize a set of states explored empty
+        self.explored = set()
 
-        # Cauta pana ce gasete o solutie.
+        # Search until a solution is found
         while True:
 
-            #Daca frontiera este 'goala' atunci nu avem solutie
-            if frontiera.frontiera_goala():
+            #If the frontier is empty then there's no solution
+            if frontier.empty_frontier():
                 raise Exception("The maze has no solutions!")
 
-            # Sterge un nod din frontiera
-            nod = frontiera.sterge()
-            self.stari_explorate += 1
+            # remove a node from frontier
+            node = frontier.remove()
+            self.nodes_explored += 1
 
-            #Daca nodul este iesirea atunci avem o solutie
-            if nod.stare == self.iesire:
-                actiuni = []
-                celule = []
-                while nod.stare_anterioara is not None:
-                    actiuni.append(nod.actiune)
-                    celule.append(nod.stare)
-                    nod = nod.stare_anterioara
-                actiuni.reverse()
-                celule.reverse()
-                self.solutie = (actiuni, celule)
+            #If the state is the goal then we have a solution
+            if node.state == self.goal:
+                actions = []
+                cells = []
+                while node.previous_state is not None:
+                    actions.append(node.action)
+                    cells.append(node.state)
+                    node = node.previous_state
+                actions.reverse()
+                cells.reverse()
+                self.solution = (actions, cells)
                 return
 
-            # adauga nodul in cele explorate
-            self.explorate.add(nod.stare)
+            # add the node in the explored ones
+            self.explored.add(node.state)
 
-            # adauga vecinii in frontiera
-            for actiune, stare in self.vecini(nod.stare):
-                if not frontiera.verifica_stare(stare) and stare not in self.explorate:
-                    nod_nou = Nod(stare=stare, stare_anterioara=nod, actiune=actiune)
-                    frontiera.adauga(nod_nou)
+            # add neighbours in frontier
+            for action, state in self.neighbours(node.state):
+                if not frontier.check_state(state) and state not in self.explored:
+                    new_node = Node(state=state, previous_state=node, action=action)
+                    frontier.add(new_node)
 
-def ruleaza_IA():
-    m=mimo_IA(nivele[1])
+def run_AI():
+    m=mimo_AI(levels[1])
     print("Maze:")
-    m.afiseaza()
+    m.display()
     print("Solving...")
-    m.rezolvare()
-    print("Steps explored:", m.stari_explorate)
+    m.solve()
+    print("Steps explored:", m.nodes_explored)
     print("Solution:")
-    m.afiseaza()
-    m.anima_soricel()
+    m.display()
+    m.animate_mouse()
