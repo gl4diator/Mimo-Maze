@@ -13,7 +13,7 @@ Some of modules probably are not necessary. I just listed them up "just in case"
 
 Install the custom font from "font" directory for a properly and specific design. 
 
-The application can be run with the command prompt: python.exe mimo.py (in the game directory)
+The application can be run in the command prompt with the following command: python.exe mimo.py (in the game directory)
 
 https://github.com/gl4diator/Mimo-Maze
 
