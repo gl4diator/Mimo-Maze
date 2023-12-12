@@ -1,5 +1,6 @@
 import turtle
 import time
+import keyboard
 
 #intialize turtle window
 wn = turtle.Screen()
@@ -182,6 +183,11 @@ class mimo_AI(turtle.Turtle):
                             levels.append(level2)
                             levels.append(level3)
                             return False
+    def escape_exit_btn(self):
+        if(keyboard.is_pressed('Escape')):
+            return True
+        else:
+            False
 
     def display(self):
         pencil = turtle.Turtle()

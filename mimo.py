@@ -6,6 +6,7 @@ import winsound
 import keyboard
 import random
 import IA_mimo as AI
+from tkinter import PhotoImage
 
 #initialize window
 window = turtle.Screen()
@@ -25,9 +26,12 @@ for image in images:
 
 def interface():
     #interface design
-    window.title('Mimo')
+    #Window icon and design
+    icon_image = PhotoImage(file="./images/lives.gif")
+    window.title('Mimo Maze')
     window.bgpic("./images/background_interface.png")
     window.bgcolor("black")
+    window.getcanvas().winfo_toplevel().iconphoto(True,icon_image)
 
     #turtle object for easy work
     pen = turtle.Turtle()
@@ -120,6 +124,7 @@ def interface():
     pen.goto(11,-150)
     pen.color("black")
     pen.write("Quit", font=("Fire Brathers Personal Use",35,"normal"),align="center")
+
 
 #Call interface funtion()
 interface()
@@ -330,6 +335,10 @@ def mimo_maze():
                 return True
             else:
                 return False
+        
+        def back_to_start(self):
+            self.goto(self.startx,self.starty)
+
         
         def next_level(self):
             self.up()
@@ -742,7 +751,10 @@ def mimo_maze():
             for enemy in enemies_coords:
                 if mouse.collision(enemy):
                     mouse.lives -=1
-                    pen.life_lost() 
+                    pen.life_lost()
+                    mouse.back_to_start()
+                    Enemy.restart(enemy)
+                    window.update()
                     #time.sleep(1.5)
 
             if pen_time.time < 0 :
